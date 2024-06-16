@@ -6,6 +6,7 @@ function App() {
     const [file, setFile] = useState(null);
     const [JSONtext, setJSONtext] = useState('');
     const [envList, setEnvList] = useState({});
+    const [notice, setNotice] = useState("");
 
     useEffect(() => {
         if (file) {
@@ -26,13 +27,20 @@ function App() {
             const postmanRegex = /\{\{[^\{\}]+\}\}/g;
             const envVarListAll = JSONtext.match(postmanRegex);
 
-            const envVarList = {};
+            if (envVarListAll) {
+                const envVarList = {};
+                envVarListAll.forEach(envVar => {
+                    envVarList[envVar] = (envVarList[envVar] || 0) + 1;
+                })
+                console.log(envVarList);
+                setEnvList(envVarList);
+                setNotice("");
+            } else {
+                setEnvList({});
+                setNotice("No postman environment variable found in the current file.");
+            }
 
-            envVarListAll.forEach(envVar => {
-                envVarList[envVar] = (envVarList[envVar] || 0) + 1;
-            })
 
-            setEnvList(envVarList);
         }
     },[JSONtext])
 
@@ -49,7 +57,8 @@ function App() {
             <FileLoader file={file} onFileChange={handleFileUpload}/>
             <hr/>
             <ul>
-                {envList && Object.entries(envList).map(([envName, occurence], index) =>(<li key={index}>{envName} : {occurence}</li>))}
+                {! notice ? Object.entries(envList).map(([envName, occurence], index) =>(<li key={index}>{envName} : {occurence}</li>))
+                    : notice}
             </ul>
             <hr/>
             <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
