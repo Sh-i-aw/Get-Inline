@@ -5,7 +5,7 @@ import FileLoader from "./Components/FileLoader";
 function App() {
     const [file, setFile] = useState(null);
     const [JSONtext, setJSONtext] = useState('');
-    const [envList, setEnvList] = useState([]);
+    const [envList, setEnvList] = useState({});
 
     useEffect(() => {
         if (file) {
@@ -24,10 +24,15 @@ function App() {
     useEffect(() => {
         if (JSONtext) {
             const postmanRegex = /\{\{[^\{\}]+\}\}/g;
-            const envVarList = JSONtext.match(postmanRegex);
+            const envVarListAll = JSONtext.match(postmanRegex);
+
+            const envVarList = {};
+
+            envVarListAll.forEach(envVar => {
+                envVarList[envVar] = (envVarList[envVar] || 0) + 1;
+            })
+
             setEnvList(envVarList);
-
-
         }
     },[JSONtext])
 
@@ -44,7 +49,7 @@ function App() {
             <FileLoader file={file} onFileChange={handleFileUpload}/>
             <hr/>
             <ul>
-                {envList && envList.map((envName, index) => (<li key={index}>{envName}</li>))}
+                {envList && Object.entries(envList).map(([envName, occurence], index) =>(<li key={index}>{envName} : {occurence}</li>))}
             </ul>
             <hr/>
             <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
