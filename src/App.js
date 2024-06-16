@@ -1,5 +1,6 @@
 import './App.css';
 import {useEffect, useState} from "react";
+import FileLoader from "./Components/FileLoader";
 
 function App() {
     const [file, setFile] = useState(null);
@@ -31,18 +32,7 @@ function App() {
             <h1> load JSON here </h1>
             {/*<label htmlFor="fileSelect" className="sr-only"> choose a file to upload </label>*/}
             {/*the line above is only visible for screen readers*/}
-            <input id="fileSelect" type="file" accept=".json" onChange={handleFileUpload}/>
-            {file && (
-                <section>
-                    File details:
-                    <ul>
-                        <li>Name: {file.name}</li>
-                        <li>Type: {file.type}</li>
-                        <li>Size: {file.size} bytes</li>
-                    </ul>
-                </section>
-            )}
-
+            <FileLoader file={file} onFileChange={handleFileUpload} />
             <textarea value={JSONtext} readOnly={true} style={{height:800, width:1000}}></textarea>
         </div>
     );
