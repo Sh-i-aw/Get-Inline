@@ -1,6 +1,7 @@
 import './App.css';
 import {useEffect, useState} from "react";
 import FileLoader from "./Components/FileLoader";
+import EnvVarSelect from "./Components/EnvVarSelect";
 
 function App() {
     const [file, setFile] = useState(null);
@@ -55,12 +56,9 @@ function App() {
             {/*<label htmlFor="fileSelect" className="sr-only"> choose a file to upload </label>*/}
             {/*the line above is only visible for screen readers*/}
             <FileLoader file={file} onFileChange={handleFileUpload}/>
-            <hr/>
-            <ul>
-                {! notice ? Object.entries(envList).map(([envName, occurence], index) =>(<li key={index}>{envName} : {occurence}</li>))
-                    : notice}
-            </ul>
-            <hr/>
+                <hr/>
+            <EnvVarSelect notice={notice} envList={envList}></EnvVarSelect>
+                <hr/>
             <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
 
         </div>
