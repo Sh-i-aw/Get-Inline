@@ -6,6 +6,8 @@ import EnvVarSelect from "./Components/EnvVarSelect";
 function App() {
     const [file, setFile] = useState(null);
     const [originalJSON, setOriginalJSON] = useState('');
+    const [updatedJSON, setUpdatedJSON] = useState('')
+
     const [envList, setEnvList] = useState({});
     const [notice, setNotice] = useState(" ");
 
@@ -15,6 +17,7 @@ function App() {
             if (file) {
                 reader.onload = (e) => {
                     setOriginalJSON(e.target.result);
+                    setUpdatedJSON(e.target.result);
                 }
                 reader.readAsText(file);
             } else {
@@ -51,7 +54,6 @@ function App() {
         }
     },[originalJSON])
 
-
     function handleFileUpload(event) {
         setFile(event.target.files[0]);
         console.log(event.target.files[0]);
@@ -70,12 +72,11 @@ function App() {
     }
 
     function toggleAllCheck(isChecked) {
-        const newEnvList = {
-            ...envList,
-        };
-        Object.entries(newEnvList).map(([envName, details]) => {
-                return details.replace = isChecked;
-        })
+        const newEnvList = Object.entries(envList).reduce((varName,[key, details]) => {
+                varName[key] = {...details, replace:isChecked};
+                console.log(`${key} checked status is ${varName[key].replace}`);
+                return varName;
+        }, {})
         setEnvList(newEnvList);
     }
 
@@ -90,6 +91,18 @@ function App() {
         setEnvList(newEnvList);
     }
 
+    function inlineVars () {
+        let inlinedJSON = originalJSON;
+        Object.keys(envList)
+            .filter(varName=>envList[varName].replace)
+            .forEach(varName => {
+                    const varRegex = new RegExp(`\{\{${varName.slice(2, -2)}\}\}`, 'g');
+                    inlinedJSON = inlinedJSON.replaceAll(varRegex, envList[varName].replaceVal);
+                }
+            )
+        setUpdatedJSON(inlinedJSON);
+    }
+
     return (
         <div className="App">
             <h1> Get Inline! </h1>
@@ -101,11 +114,11 @@ function App() {
                 <hr/>
             <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
             <div className="submitArea">
-                <button> Get them inline :)</button>
+                <button onClick={inlineVars}> Get them inline :)</button>
                 <button> Download File</button>
             </div>
             <hr/>
-            <textarea value={originalJSON} readOnly={true} style={{height: 800, width: 1000}}></textarea>
+            <textarea id="filePreview" value={updatedJSON} readOnly={true} style={{height: 800, width: 1000}}></textarea>
 
         </div>
     );
