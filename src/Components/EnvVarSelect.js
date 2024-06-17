@@ -1,8 +1,9 @@
 
 export default function EnvVarSelect (props) {
+    console.log(props.notice)
     return (
         <div id="envVarSelect">
-            {! props.notice ?
+            { props.notice === "" ?
                 (<table>
                     <thead>
                     <tr>

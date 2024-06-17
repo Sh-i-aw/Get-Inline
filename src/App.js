@@ -7,7 +7,7 @@ function App() {
     const [file, setFile] = useState(null);
     const [JSONtext, setJSONtext] = useState('');
     const [envList, setEnvList] = useState({});
-    const [notice, setNotice] = useState("");
+    const [notice, setNotice] = useState(null);
 
     useEffect(() => {
         if (file) {
