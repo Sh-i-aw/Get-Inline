@@ -113,12 +113,15 @@ function App() {
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
             <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
-            <div className="submitArea">
-                <button onClick={inlineVars}> Get them inline :)</button>
-                <button> Download File</button>
-            </div>
+            { ! notice ?
+                (<div className="submitArea">
+                    <button onClick={inlineVars}> Get them inline :)</button>
+                    <button> Download File</button>
+                </div>) : ""
+            }
             <hr/>
-            <textarea id="filePreview" value={updatedJSON} readOnly={true} style={{height: 800, width: 1000}}></textarea>
+            <textarea id="filePreview" value={updatedJSON} readOnly={true}
+                      style={{height: 800, width: 1000}}></textarea>
 
         </div>
     );
