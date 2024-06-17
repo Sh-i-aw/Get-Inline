@@ -5,7 +5,7 @@ import EnvVarSelect from "./Components/EnvVarSelect";
 
 function App() {
     const [file, setFile] = useState(null);
-    const [JSONtext, setJSONtext] = useState('');
+    const [originalJSON, setOriginalJSON] = useState('');
     const [envList, setEnvList] = useState({});
     const [notice, setNotice] = useState(" ");
 
@@ -14,19 +14,19 @@ function App() {
             let reader = new FileReader();
             if (file) {
                 reader.onload = (e) => {
-                    setJSONtext(e.target.result);
+                    setOriginalJSON(e.target.result);
                 }
                 reader.readAsText(file);
             } else {
-                setJSONtext("Apologies, Get-Inline currently only supports JSON files.");
+                setOriginalJSON("Apologies, Get-Inline currently only supports JSON files.");
             }
         }
     }, [file]);
 
     useEffect(() => {
-        if (JSONtext) {
+        if (originalJSON) {
             const postmanRegex = /\{\{[^\{\}]+\}\}/g;
-            const envVarListAll = JSONtext.match(postmanRegex);
+            const envVarListAll = originalJSON.match(postmanRegex);
 
             if (envVarListAll) {
                 const envVarList = {};
@@ -49,7 +49,7 @@ function App() {
 
 
         }
-    },[JSONtext])
+    },[originalJSON])
 
 
     function handleFileUpload(event) {
@@ -100,8 +100,12 @@ function App() {
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
             <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
-                <hr/>
-            <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
+            <div>
+                <button> Get them inline :)</button>
+                <button> Download File</button>
+            </div>
+            <hr/>
+            <textarea value={originalJSON} readOnly={true} style={{height: 800, width: 1000}}></textarea>
 
         </div>
     );
