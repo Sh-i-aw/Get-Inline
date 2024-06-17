@@ -1,6 +1,5 @@
 
 export default function EnvVarSelect (props) {
-    console.log(props.notice)
     return (
         <div id="envVarSelect">
             { props.notice === "" ?
@@ -20,7 +19,7 @@ export default function EnvVarSelect (props) {
                                 <input
                                     type="checkbox"
                                     checked={details.replace}
-                                    onChange={() => props.toggleCheck(envName)}
+                                    onChange={(event) => props.toggleCheck(envName, event.target.checked)}
                                 />
                             </td>
                             <td>{envName}</td>
@@ -29,7 +28,7 @@ export default function EnvVarSelect (props) {
                                 <input
                                     type="text"
                                     value={details.replaceVal}
-
+                                    onChange={ (event) => props.handleInput(envName, event.target.value)}
                                 />
                             </td>
                         </tr>))}
@@ -38,12 +37,4 @@ export default function EnvVarSelect (props) {
                 : props.notice
             }
         </div>)
-
 }
-
-
-{/*<ul>*/}
-{/*    {!props.notice ? Object.entries(props.envList).map(([envName, details], index) => (*/}
-{/*        <li key={index}>{envName} : {details.occurrence}</li>))*/}
-{/*    : props.notice}*/}
-{/*</ul>*/}
