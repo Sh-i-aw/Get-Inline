@@ -31,7 +31,14 @@ function App() {
             if (envVarListAll) {
                 const envVarList = {};
                 envVarListAll.forEach(envVar => {
-                    envVarList[envVar] = (envVarList[envVar] || 0) + 1;
+                    if (!envVarList[envVar]) {
+                        envVarList[envVar] = {
+                            occurrence : 0,
+                            replace : false,
+                            replaceVal : ''
+                        }
+                    }
+                    envVarList[envVar].occurrence += 1;
                 })
                 console.log(envVarList);
                 setEnvList(envVarList);
@@ -45,9 +52,21 @@ function App() {
         }
     },[JSONtext])
 
+
     function handleFileUpload(event) {
         setFile(event.target.files[0]);
         console.log(event.target.files[0]);
+    }
+
+    function toggleSingleCheck(envName) {
+        const updatedList = {
+            ...envList, // Step 1
+            [envName]: {
+                ...envList[envName], // Step 2
+                replace: !envList[envName].replace // Step 3
+            }
+        };
+        setEnvList(updatedList); // Step 4
     }
 
     return (
@@ -57,7 +76,7 @@ function App() {
             {/*the line above is only visible for screen readers*/}
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
-            <EnvVarSelect notice={notice} envList={envList}></EnvVarSelect>
+            <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck}></EnvVarSelect>
                 <hr/>
             <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
 
