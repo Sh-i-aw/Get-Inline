@@ -100,7 +100,7 @@ function App() {
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
             <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
-            <div>
+            <div className="submitArea">
                 <button> Get them inline :)</button>
                 <button> Download File</button>
             </div>
