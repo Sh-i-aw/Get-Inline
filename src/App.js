@@ -65,6 +65,17 @@ function App() {
                 replace: isChecked
             }
         };
+        console.log(newEnvList[envName].replace);
+        setEnvList(newEnvList);
+    }
+
+    function toggleAllCheck(isChecked) {
+        const newEnvList = {
+            ...envList,
+        };
+        Object.entries(newEnvList).map(([envName, details]) => {
+                return details.replace = isChecked;
+        })
         setEnvList(newEnvList);
     }
 
@@ -88,7 +99,7 @@ function App() {
             {/*the line above is only visible for screen readers*/}
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
-            <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} handleInput={updateReplaceVal}></EnvVarSelect>
+            <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
                 <hr/>
             <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
 

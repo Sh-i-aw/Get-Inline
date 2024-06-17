@@ -6,7 +6,11 @@ export default function EnvVarSelect (props) {
                 (<table>
                     <thead>
                     <tr>
-                        <th><input type="checkbox"/></th>
+                        <th><input
+                                type="checkbox"
+                                onChange={(event) => props.toggleAllCheck(event.target.checked)}
+                            />
+                        </th>
                         <th>Env Var Name</th>
                         <th># of Occurrence</th>
                         <th>Replacement Value</th>

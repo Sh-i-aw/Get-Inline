@@ -1,3 +1,28 @@
+table {
+  margin: auto;
+}
+
+td {
+  padding: 10px 20px;
+  background-color: aliceblue;
+}
+
+th {
+  background-color: lemonchiffon;
+}
+
+input[type="file"] {
+  padding: 20px 0px;
+}
+
+input[type="text"] {
+  width: 200px;
+}
+li {
+  text-align: left;
+  margin-left: 400px;
+}
+
 .App {
   text-align: center;
 }
@@ -37,15 +62,3 @@
   }
 }
 
-table {
-  margin: auto;
-}
-
-td {
-  padding: 10px 20px;
-  background-color: aliceblue;
-}
-
-th {
-  background-color: lemonchiffon;
-}
