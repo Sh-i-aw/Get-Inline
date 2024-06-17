@@ -23,6 +23,29 @@ li {
   margin-left: 400px;
 }
 
+.submitArea {
+  margin: auto;
+  padding: 20px;
+}
+
+.submitArea button {
+  margin: 0px 20px;
+  padding: 10px;
+  background-color: lightcyan;
+  color: darkorange;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: solid 1px gainsboro;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.submitArea button:hover {
+  background-color: cyan;
+  color: orange;
+}
+
 .App {
   text-align: center;
 }

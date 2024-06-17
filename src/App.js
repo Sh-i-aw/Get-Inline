@@ -5,7 +5,9 @@ import EnvVarSelect from "./Components/EnvVarSelect";
 
 function App() {
     const [file, setFile] = useState(null);
-    const [JSONtext, setJSONtext] = useState('');
+    const [originalJSON, setOriginalJSON] = useState('');
+    const [updatedJSON, setUpdatedJSON] = useState('')
+
     const [envList, setEnvList] = useState({});
     const [notice, setNotice] = useState(" ");
 
@@ -14,19 +16,20 @@ function App() {
             let reader = new FileReader();
             if (file) {
                 reader.onload = (e) => {
-                    setJSONtext(e.target.result);
+                    setOriginalJSON(e.target.result);
+                    setUpdatedJSON(e.target.result);
                 }
                 reader.readAsText(file);
             } else {
-                setJSONtext("Apologies, Get-Inline currently only supports JSON files.");
+                setOriginalJSON("Apologies, Get-Inline currently only supports JSON files.");
             }
         }
     }, [file]);
 
     useEffect(() => {
-        if (JSONtext) {
+        if (originalJSON) {
             const postmanRegex = /\{\{[^\{\}]+\}\}/g;
-            const envVarListAll = JSONtext.match(postmanRegex);
+            const envVarListAll = originalJSON.match(postmanRegex);
 
             if (envVarListAll) {
                 const envVarList = {};
@@ -49,8 +52,7 @@ function App() {
 
 
         }
-    },[JSONtext])
-
+    },[originalJSON])
 
     function handleFileUpload(event) {
         setFile(event.target.files[0]);
@@ -70,12 +72,11 @@ function App() {
     }
 
     function toggleAllCheck(isChecked) {
-        const newEnvList = {
-            ...envList,
-        };
-        Object.entries(newEnvList).map(([envName, details]) => {
-                return details.replace = isChecked;
-        })
+        const newEnvList = Object.entries(envList).reduce((varName,[key, details]) => {
+                varName[key] = {...details, replace:isChecked};
+                console.log(`${key} checked status is ${varName[key].replace}`);
+                return varName;
+        }, {})
         setEnvList(newEnvList);
     }
 
@@ -90,6 +91,34 @@ function App() {
         setEnvList(newEnvList);
     }
 
+    function inlineVars () {
+        let inlinedJSON = originalJSON;
+        Object.keys(envList)
+            .filter(varName=>envList[varName].replace)
+            .forEach(varName => {
+                    const varRegex = new RegExp(`\{\{${varName.slice(2, -2)}\}\}`, 'g');
+                    inlinedJSON = inlinedJSON.replaceAll(varRegex, envList[varName].replaceVal);
+                }
+            )
+        setUpdatedJSON(inlinedJSON);
+    }
+
+    function downloadJSON() {
+        const blob = new Blob([updatedJSON], {type : "application/json"});
+
+        const downloadURL = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadURL;
+
+        downloadLink.download = `inlined-${file.name}.json`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click(); // trigger the download
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadURL);
+    }
+
+
     return (
         <div className="App">
             <h1> Get Inline! </h1>
@@ -100,8 +129,15 @@ function App() {
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
             <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
-                <hr/>
-            <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
+            { ! notice ?
+                (<div className="submitArea">
+                    <button onClick={inlineVars}> Get them inline :)</button>
+                    <button onClick={downloadJSON}> Download File</button>
+                </div>) : ""
+            }
+            <hr/>
+            <textarea id="filePreview" value={updatedJSON} readOnly={true}
+                      style={{height: 800, width: 1000}}></textarea>
 
         </div>
     );
