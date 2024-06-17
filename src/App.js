@@ -103,6 +103,22 @@ function App() {
         setUpdatedJSON(inlinedJSON);
     }
 
+    function downloadJSON() {
+        const blob = new Blob([updatedJSON], {type : "application/json"});
+
+        const downloadURL = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadURL;
+
+        downloadLink.download = `inlined-${file.name}.json`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click(); // trigger the download
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadURL);
+    }
+
+
     return (
         <div className="App">
             <h1> Get Inline! </h1>
@@ -116,7 +132,7 @@ function App() {
             { ! notice ?
                 (<div className="submitArea">
                     <button onClick={inlineVars}> Get them inline :)</button>
-                    <button> Download File</button>
+                    <button onClick={downloadJSON}> Download File</button>
                 </div>) : ""
             }
             <hr/>
