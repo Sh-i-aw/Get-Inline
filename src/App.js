@@ -7,7 +7,7 @@ function App() {
     const [file, setFile] = useState(null);
     const [JSONtext, setJSONtext] = useState('');
     const [envList, setEnvList] = useState({});
-    const [notice, setNotice] = useState("");
+    const [notice, setNotice] = useState(" ");
 
     useEffect(() => {
         if (file) {
@@ -31,9 +31,15 @@ function App() {
             if (envVarListAll) {
                 const envVarList = {};
                 envVarListAll.forEach(envVar => {
-                    envVarList[envVar] = (envVarList[envVar] || 0) + 1;
+                    if (!envVarList[envVar]) {
+                        envVarList[envVar] = {
+                            occurrence : 0,
+                            replace : false,
+                            replaceVal : ''
+                        }
+                    }
+                    envVarList[envVar].occurrence += 1;
                 })
-                console.log(envVarList);
                 setEnvList(envVarList);
                 setNotice("");
             } else {
@@ -45,19 +51,55 @@ function App() {
         }
     },[JSONtext])
 
+
     function handleFileUpload(event) {
         setFile(event.target.files[0]);
         console.log(event.target.files[0]);
     }
 
+    function toggleSingleCheck(envName, isChecked) {
+        const newEnvList = {
+            ...envList,
+            [envName]: {
+                ...envList[envName],
+                replace: isChecked
+            }
+        };
+        console.log(newEnvList[envName].replace);
+        setEnvList(newEnvList);
+    }
+
+    function toggleAllCheck(isChecked) {
+        const newEnvList = {
+            ...envList,
+        };
+        Object.entries(newEnvList).map(([envName, details]) => {
+                return details.replace = isChecked;
+        })
+        setEnvList(newEnvList);
+    }
+
+    function updateReplaceVal(envName, newReplaceVal) {
+        const newEnvList = {
+            ...envList,
+            [envName]: {
+                ...envList[envName],
+                replaceVal: newReplaceVal
+            }
+        };
+        setEnvList(newEnvList);
+    }
+
     return (
         <div className="App">
-            <h1> load JSON here </h1>
+            <h1> Get Inline! </h1>
+            <p> ( If you are a PostMan environment variable, that is. ) </p>
+            <hr/>
             {/*<label htmlFor="fileSelect" className="sr-only"> choose a file to upload </label>*/}
             {/*the line above is only visible for screen readers*/}
             <FileLoader file={file} onFileChange={handleFileUpload}/>
                 <hr/>
-            <EnvVarSelect notice={notice} envList={envList}></EnvVarSelect>
+            <EnvVarSelect notice={notice} envList={envList} toggleCheck={toggleSingleCheck} toggleAllCheck={toggleAllCheck} handleInput={updateReplaceVal}></EnvVarSelect>
                 <hr/>
             <textarea value={JSONtext} readOnly={true} style={{height: 800, width: 1000}}></textarea>
 
